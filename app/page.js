@@ -7,7 +7,6 @@ import TransactionList from "@/components/TransactionList";
 import ExpensesChart from "@/components/ExpensesChart";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
-
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
 

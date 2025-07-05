@@ -8,7 +8,6 @@ import {
 } from "@/lib/transactionUtils";
 import Loader from "@/components/Loader";
 import CategoryPieChart from "@/components/CategoryPieChart";
-
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);

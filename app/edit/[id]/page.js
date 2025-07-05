@@ -2,12 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Loader from "@/components/Loader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
-import { Label } from "@/components/ui/label";
 import EditTransaction from "@/components/EditTransaction";
 
 const categories = [
