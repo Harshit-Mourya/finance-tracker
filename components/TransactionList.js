@@ -41,12 +41,17 @@ export default function TransactionList({ transactions, setTransactions }) {
                 ₹{tx.amount}
               </CardTitle>
               <span className="text-sm text-gray-400">
-                {new Date(tx.date).toLocaleDateString()}
+                {new Date(tx.date).toLocaleDateString("en-GB")}
               </span>
             </CardHeader>
 
             <CardContent className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-              <p className="text-gray-300">{tx.description}</p>
+              <div>
+                <p className="text-gray-300">{tx.description}</p>
+                <span className="text-xs text-blue-400 mt-1 inline-block">
+                  Category: {tx.category || "Other"}
+                </span>
+              </div>
 
               <div className="flex gap-2">
                 <Link href={`/edit/${tx._id}`}>

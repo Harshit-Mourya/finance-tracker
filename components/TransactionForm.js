@@ -8,10 +8,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
 
+const categoryOptions = [
+  "Food",
+  "Transport",
+  "Entertainment",
+  "Bills",
+  "Shopping",
+  "Other",
+];
+
 export default function TransactionForm() {
   const router = useRouter();
 
-  const [form, setForm] = useState({ amount: "", description: "", date: "" });
+  const [form, setForm] = useState({
+    amount: "",
+    description: "",
+    date: "",
+    category: "Other",
+  });
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -26,9 +40,9 @@ export default function TransactionForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.amount) newErrors.amount = "Amount is required.";
-    if (!form.description) newErrors.description = "Description is required.";
-    if (!form.date) newErrors.date = "Date is required.";
+    if (!form.amount) newErrors.amount = "Amount is required!";
+    if (!form.description) newErrors.description = "Description is required!";
+    if (!form.date) newErrors.date = "Date is required!";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -49,10 +63,10 @@ export default function TransactionForm() {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (!res.ok) throw new Error("Failed");
+      if (!res.ok) throw new Error("Failed!");
 
       toast.success("Transaction added successfully!");
-      setForm({ amount: "", description: "", date: "" });
+      setForm({ amount: "", description: "", date: "", category: "Other" });
       router.push("/");
     } catch (err) {
       toast.error("Failed to add transaction!");
@@ -113,6 +127,23 @@ export default function TransactionForm() {
             {errors.date && (
               <p className="text-sm text-red-400">{errors.date}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full bg-gray-900 text-white border border-gray-700 rounded-md px-4 py-2"
+            >
+              {categoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
           </div>
 
           <Button

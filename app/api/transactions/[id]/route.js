@@ -2,37 +2,41 @@ import { connectDB } from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import { NextResponse } from "next/server";
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
+  const params = await context.params;
+
   await connectDB();
   try {
     const transaction = await Transaction.findById(params.id);
     if (!transaction) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return NextResponse.json({ error: "Not found!" }, { status: 404 });
     }
     return NextResponse.json(transaction);
   } catch (err) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid ID!" }, { status: 400 });
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
+  const params = await context.params;
+
   await connectDB();
-
-  const { id } = params;
-
   try {
-    await Transaction.findByIdAndDelete(id);
+    await Transaction.findByIdAndDelete(params.id);
     return NextResponse.json({ message: "Deleted!" });
   } catch (err) {
     return NextResponse.json({ error: "Error deleting!" }, { status: 500 });
   }
 }
 
-export async function PUT(req, { params }) {
-  await connectDB();
+export async function PUT(req, context) {
+  const params = await context.params;
 
+  await connectDB();
   try {
     const data = await req.json();
+    if (!data.category) data.category = "Other";
+
     const updated = await Transaction.findByIdAndUpdate(params.id, data, {
       new: true,
     });

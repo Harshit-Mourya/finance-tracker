@@ -7,11 +7,27 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/Loader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import { Label } from "@/components/ui/label";
+import EditTransaction from "@/components/EditTransaction";
 
-export default function EditTransaction() {
+const categories = [
+  "Food",
+  "Transport",
+  "Shopping",
+  "Bills",
+  "Entertainment",
+  "Other",
+];
+
+export default function EditTransactionPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [form, setForm] = useState({ amount: "", description: "", date: "" });
+  const [form, setForm] = useState({
+    amount: "",
+    description: "",
+    date: "",
+    category: "",
+  });
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -29,6 +45,7 @@ export default function EditTransaction() {
           amount: data.amount,
           description: data.description,
           date: data.date.split("T")[0],
+          category: data.category || "Other",
         });
       } catch (err) {
         console.error(err);
@@ -78,42 +95,13 @@ export default function EditTransaction() {
       {loading ? (
         <Loader size={50} />
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Transaction</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="number"
-                name="amount"
-                value={form.amount}
-                onChange={handleChange}
-                placeholder="Amount"
-              />
-              <Input
-                type="text"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Description"
-              />
-              <Input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-              />
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="w-full flex items-center justify-center gap-2"
-              >
-                {submitting ? "Saving..." : "Save Changes"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+        <EditTransaction
+          categories={categories}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          submitting={submitting}
+          form={form}
+        />
       )}
     </main>
   );
