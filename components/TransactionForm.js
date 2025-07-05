@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import toast from "react-hot-toast";
 
 export default function TransactionForm() {
   const router = useRouter();
 
   const [form, setForm] = useState({ amount: "", description: "", date: "" });
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -37,7 +38,7 @@ export default function TransactionForm() {
 
     if (!validate()) return;
 
-    setLoading(true);
+    setSubmitting(true);
     try {
       const res = await fetch("/api/transactions", {
         method: "POST",
@@ -48,12 +49,17 @@ export default function TransactionForm() {
         headers: { "Content-Type": "application/json" },
       });
 
+      if (!res.ok) throw new Error("Failed");
+
+      toast.success("Transaction added successfully!");
       setForm({ amount: "", description: "", date: "" });
       router.push("/");
     } catch (err) {
+      toast.error("Failed to add transaction!");
       console.error("Error:", err);
+    } finally {
+      setSubmitting(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -111,10 +117,10 @@ export default function TransactionForm() {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={submitting}
             className="w-full cursor-pointer"
           >
-            {loading ? "Adding..." : "Add Transaction"}
+            {submitting ? "Adding..." : "Add Transaction"}
           </Button>
         </form>
       </CardContent>

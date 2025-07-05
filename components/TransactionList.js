@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 export default function TransactionList({ transactions, setTransactions }) {
   const handleDelete = async (id) => {
@@ -12,10 +13,15 @@ export default function TransactionList({ transactions, setTransactions }) {
     if (!ok) return;
 
     try {
-      await fetch(`/api/transactions/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/transactions/${id}`, { method: "DELETE" });
+
+      if (!res.ok) throw new Error("Delete failed!");
+
       setTransactions((prev) => prev.filter((t) => t._id !== id));
+      toast.success("Transaction deleted!");
     } catch (err) {
       console.error("Delete failed:", err);
+      toast.error("Failed to delete transaction!");
     }
   };
 

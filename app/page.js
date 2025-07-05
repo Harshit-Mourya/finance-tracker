@@ -5,14 +5,29 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TransactionList from "@/components/TransactionList";
 import ExpensesChart from "@/components/ExpensesChart";
+import toast from "react-hot-toast";
+import Loader from "@/components/Loader";
 
 export default function HomePage() {
+  const [loading, setLoading] = useState(true);
+
   const [transactions, setTransactions] = useState([]);
 
   const fetchData = async () => {
-    const res = await fetch("/api/transactions");
-    const data = await res.json();
-    setTransactions(data);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/transactions");
+      if (!res.ok) throw new Error("Failed to fetch transactions!");
+
+      const data = await res.json();
+      setTransactions(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load transactions!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -35,18 +50,22 @@ export default function HomePage() {
         </Link>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="w-full lg:w-1/2">
-          <TransactionList
-            transactions={transactions}
-            setTransactions={setTransactions}
-          />
-        </div>
+      {loading ? (
+        <Loader size={50} />
+      ) : (
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="w-full lg:w-1/2">
+            <TransactionList
+              transactions={transactions}
+              setTransactions={setTransactions}
+            />
+          </div>
 
-        <div className="w-full lg:w-1/2">
-          <ExpensesChart transactions={transactions} />
+          <div className="w-full lg:w-1/2">
+            <ExpensesChart transactions={transactions} />
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }
