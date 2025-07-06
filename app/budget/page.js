@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+
 import toast from "react-hot-toast";
+import SetBudgetForm from "@/components/budget/SetBudgetForm";
+import BudgetList from "@/components/budget/BudgetList";
 
 const categories = [
   "Food",
@@ -71,86 +70,15 @@ export default function BudgetPage() {
       <h1 className="text-3xl font-bold text-center text-white mb-6">
         Monthly Budget
       </h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Set Monthly Budget</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label>Category</Label>
-              <select
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                className="w-full bg-gray-900 text-white border border-gray-700 rounded-md px-4 py-2"
-              >
-                <option value="">Select a category</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            <div className="space-y-2">
-              <Label>Month</Label>
-              <Input
-                type="month"
-                name="month"
-                value={form.month}
-                onChange={handleChange}
-                min={new Date().toISOString().slice(0, 7)}
-              />
-            </div>
+      <SetBudgetForm
+        form={form}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        categories={categories}
+      />
 
-            <div className="space-y-2">
-              <Label>Amount</Label>
-              <Input
-                type="number"
-                name="amount"
-                value={form.amount}
-                onChange={handleChange}
-                placeholder="Enter amount"
-              />
-            </div>
-
-            <Button type="submit" className="w-full cursor-pointer">
-              Save Budget
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Existing Budgets</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {budgets.length === 0 ? (
-            <p className="text-gray-400">No budgets yet.</p>
-          ) : (
-            budgets.map((b) => (
-              <div
-                key={`${b.category}-${b.month}`}
-                className="flex justify-between border-b border-gray-700 pb-1"
-              >
-                <span>
-                  {b.category} -{" "}
-                  {new Date(b.month + "-01").toLocaleString("default", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </span>
-                <span className="text-green-400 font-semibold">
-                  ₹{b.amount}
-                </span>
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
+      <BudgetList budgets={budgets} />
     </section>
   );
 }

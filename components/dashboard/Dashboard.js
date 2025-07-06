@@ -1,8 +1,8 @@
 "use client";
 
-import ExpenseOverviewCard from "../ExpenseOverviewCard ";
-import ChartViewer from "@/components/ChartViewer";
-import RecentTransactions from "@/components/RecentTransactions";
+import ExpenseOverviewCard from "./ExpenseOverviewCard ";
+import ChartViewer from "@/components/dashboard/ChartViewer";
+import RecentTransactions from "@/components/dashboard/RecentTransactions";
 
 export default function Dashboard({
   totalExpense,
