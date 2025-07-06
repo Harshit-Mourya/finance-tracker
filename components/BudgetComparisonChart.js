@@ -16,8 +16,6 @@ import toast from "react-hot-toast";
 import { getBudgetComparison } from "@/lib/budgetUtils";
 
 export default function BudgetComparisonChart({ budgets, transactions }) {
-  console.log(budgets);
-
   const [selectedMonth, setSelectedMonth] = useState(
     format(new Date(), "yyyy-MM")
   );
