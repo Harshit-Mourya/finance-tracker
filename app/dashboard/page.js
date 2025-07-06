@@ -10,12 +10,10 @@ import Loader from "@/components/Loader";
 import CategoryPieChart from "@/components/CategoryPieChart";
 import ExpensesChart from "@/components/ExpensesChart";
 import BudgetComparisonChart from "@/components/BudgetComparisonChart";
-import { getBudgetComparison, getBudgetInsights } from "@/lib/budgetUtils";
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [budgets, setBudgets] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -42,16 +40,9 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  console.log("Budgets:", budgets);
-
   const totalExpense = calculateTotalExpense(transactions);
   const categoryTotals = getCategoryTotals(transactions);
   const recentTransactions = transactions.slice(0, 5);
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  const chartData = getBudgetComparison(budgets, transactions, currentMonth);
-  const insights = getBudgetInsights(budgets, transactions, currentMonth);
-
-  console.log("Chart Data:", chartData);
 
   if (loading) {
     return <Loader size={50} />;
@@ -89,19 +80,7 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Spending Insights</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1 text-sm text-gray-300">
-          {insights.length === 0 ? (
-            <p>No insights available for this month.</p>
-          ) : (
-            insights.map((msg, i) => <p key={i}>{msg}</p>)
-          )}
-        </CardContent>
-      </Card>
-
+      {/* Charts */}
       <Card>
         <CardHeader>
           <CardTitle>Insights Through Charts</CardTitle>
@@ -112,7 +91,10 @@ export default function Dashboard() {
             <CategoryPieChart data={categoryTotals} />
           </div>
           <div>
-            <BudgetComparisonChart data={chartData} month={currentMonth} />
+            <BudgetComparisonChart
+              budgets={budgets}
+              transactions={transactions}
+            />
           </div>
         </CardContent>
       </Card>
