@@ -34,7 +34,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className=" flex flex-col mx-auto p-4 mt-10 space-y-6">
+    <main className=" flex flex-col mx-auto px-4 md:px-10 my-10 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-2xl font-bold text-white text-center sm:text-left">
           Personal Finance Tracker
@@ -52,16 +52,12 @@ export default function HomePage() {
       {loading ? (
         <Loader size={50} />
       ) : (
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="w-full lg:w-1/2">
+        <div className="flex flex-col items-center">
+          <div className="w-full max-w-2xl lg:max-w-7xl">
             <TransactionList
               transactions={transactions}
               setTransactions={setTransactions}
             />
-          </div>
-
-          <div className="w-full lg:w-1/2">
-            <ExpensesChart transactions={transactions} />
           </div>
         </div>
       )}

@@ -8,36 +8,57 @@ import {
 } from "@/lib/transactionUtils";
 import Loader from "@/components/Loader";
 import CategoryPieChart from "@/components/CategoryPieChart";
+import ExpensesChart from "@/components/ExpensesChart";
+import BudgetComparisonChart from "@/components/BudgetComparisonChart";
+import { getBudgetComparison, getBudgetInsights } from "@/lib/budgetUtils";
+
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const res = await fetch("/api/transactions");
-        const data = await res.json();
-        setTransactions(data);
-      } catch (err) {
-        console.error("Failed to fetch transactions:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const [txRes, budgetRes] = await Promise.all([
+        fetch("/api/transactions"),
+        fetch("/api/budgets"),
+      ]);
+      const [txData, budgetData] = await Promise.all([
+        txRes.json(),
+        budgetRes.json(),
+      ]);
 
-    fetchTransactions();
+      setTransactions(txData);
+      setBudgets(budgetData);
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  console.log("Budgets:", budgets);
 
   const totalExpense = calculateTotalExpense(transactions);
   const categoryTotals = getCategoryTotals(transactions);
-  const recentTransactions = transactions.slice(0, 5); // most recent 5
+  const recentTransactions = transactions.slice(0, 5);
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const chartData = getBudgetComparison(budgets, transactions, currentMonth);
+  const insights = getBudgetInsights(budgets, transactions, currentMonth);
+
+  console.log("Chart Data:", chartData);
 
   if (loading) {
     return <Loader size={50} />;
   }
 
   return (
-    <section className="max-w-4xl mx-auto p-4 space-y-6">
+    <section className="max-w-5xl mx-auto p-4 space-y-6">
       <h1 className="text-3xl font-bold text-center text-white mb-6">
         Dashboard
       </h1>
@@ -68,13 +89,31 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Category-wise Pie Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Spending by Category</CardTitle>
+          <CardTitle>Spending Insights</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-1 text-sm text-gray-300">
+          {insights.length === 0 ? (
+            <p>No insights available for this month.</p>
+          ) : (
+            insights.map((msg, i) => <p key={i}>{msg}</p>)
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Insights Through Charts</CardTitle>
         </CardHeader>
         <CardContent>
-          <CategoryPieChart data={categoryTotals} />
+          <div className="flex flex-col lg:flex-row gap-2">
+            <ExpensesChart transactions={transactions} />
+            <CategoryPieChart data={categoryTotals} />
+          </div>
+          <div>
+            <BudgetComparisonChart data={chartData} month={currentMonth} />
+          </div>
         </CardContent>
       </Card>
 

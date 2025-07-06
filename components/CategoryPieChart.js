@@ -18,8 +18,11 @@ export default function CategoryPieChart({ data }) {
   }));
 
   return (
-    <div className="w-full flex justify-center">
-      <PieChart width={300} height={300}>
+    <div className="w-full flex flex-col items-center bg-gray-800 p-6 rounded-xl mt-5">
+      <h2 className="text-xl text-center font-semibold mb-4 text-white">
+        Category-wise Spending Distribution
+      </h2>
+      <PieChart width={300} height={400}>
         <Pie
           data={formattedData}
           cx="50%"

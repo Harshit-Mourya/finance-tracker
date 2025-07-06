@@ -15,10 +15,10 @@ import {
 export default function ExpensesChart({ transactions }) {
   // Group data by month
   const monthlyData = transactions
-    .sort((a, b) => new Date(a.date) - new Date(b.date)) // ✅ Sort transactions by date
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
     .reduce((acc, tx) => {
       const date = new Date(tx.date);
-      const monthKey = date.toISOString().slice(0, 7); // YYYY-MM format for stable sorting
+      const monthKey = date.toISOString().slice(0, 7);
       const label = date.toLocaleString("default", {
         month: "short",
         year: "numeric",
@@ -32,10 +32,10 @@ export default function ExpensesChart({ transactions }) {
       }
       return acc;
     }, [])
-    .sort((a, b) => a.key.localeCompare(b.key)); // ✅ Sort grouped months by key (YYYY-MM)
+    .sort((a, b) => a.key.localeCompare(b.key));
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl mt-10 w-full">
+    <div className="bg-gray-800 p-6 rounded-xl mt-5 w-full">
       <h2 className="text-xl text-center font-semibold mb-4 text-white">
         Monthly Expenses
       </h2>
@@ -45,7 +45,7 @@ export default function ExpensesChart({ transactions }) {
           No transaction data available.
         </p>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={400}>
           <BarChart
             data={monthlyData}
             margin={{ top: 10, right: 20, left: 10, bottom: 40 }}
